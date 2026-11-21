@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es-UY">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#113b56">
+  <meta name="description" content="Datos bancarios de Elaine Vasconcellos para transferencias a BROU.">
+  <title>Datos bancarios | Elaine Vasconcellos</title>
+  <style>
+    :root { color-scheme: light; --ink:#17334a; --muted:#627489; --blue:#145676; --blue2:#0d3f5b; --line:#dbe6ec; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; min-height:100dvh; display:grid; place-items:center; padding:24px 16px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; background:radial-gradient(circle at top right,#d8ebf6 0%,transparent 42%),#f0f6fa; color:var(--ink); }
+    main { width:100%; max-width:430px; }
+    .card { background:#fff; border:1px solid #e6eef3; border-radius:24px; padding:32px 24px 27px; box-shadow:0 16px 48px rgba(18,57,82,.09); }
+    .tag { display:inline-block; background:#eaf4fa; color:var(--blue); border-radius:999px; font-size:12px; font-weight:800; letter-spacing:.095em; padding:8px 13px; }
+    h1 { margin:19px 0 8px; font-size:clamp(24px,6vw,30px); letter-spacing:-.8px; line-height:1.2; }
+    .sub { color:var(--muted); margin:0 0 26px; font-size:14px; line-height:1.5; }
+    .bank { border-top:1px solid var(--line); padding-top:23px; display:flex; align-items:center; gap:13px; }
+    .symbol { width:48px; height:48px; border-radius:14px; display:grid; place-items:center; background:var(--blue2); color:#fff; font-size:22px; font-weight:800; flex:none; }
+    .bankname { font-size:20px; font-weight:800; }
+    .bankdesc { color:var(--muted); font-size:13px; margin-top:3px; }
+    .details { margin-top:25px; background:#f5f9fc; border:1px solid #e3edf3; border-radius:16px; padding:18px 17px; }
+    .label { display:block; font-size:12px; text-transform:uppercase; font-weight:800; color:#63778a; letter-spacing:.065em; margin-bottom:9px; }
+    .account { font-size:clamp(19px,5.4vw,25px); font-weight:800; letter-spacing:.02em; line-height:1.3; overflow-wrap:anywhere; font-variant-numeric:tabular-nums; user-select:all; -webkit-user-select:all; }
+    button { width:100%; margin-top:20px; border:0; background:var(--blue); color:#fff; border-radius:14px; padding:17px 14px; font:inherit; font-size:16px; font-weight:800; cursor:pointer; touch-action:manipulation; transition:background .15s ease; }
+    button:hover,button:focus-visible { background:var(--blue2); }
+    button:focus-visible { outline:3px solid #89c0d9; outline-offset:3px; }
+    .notice { min-height:22px; margin:11px 0 0; text-align:center; color:#16633f; font-size:14px; font-weight:600; }
+    .help { text-align:center; color:var(--muted); margin:20px 0 0; line-height:1.5; font-size:12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card" aria-label="Datos bancarios de Elaine Vasconcellos">
+      <span class="tag">DATOS PARA TRANSFERENCIA</span>
+      <h1>Elaine Vasconcellos</h1>
+      <p class="sub">Copiá el número de cuenta para realizar tu transferencia.</p>
+      <div class="bank">
+        <div class="symbol" aria-hidden="true">B</div>
+        <div><div class="bankname">BROU</div><div class="bankdesc">Banco República · Caja de ahorro en pesos ($)</div></div>
+      </div>
+      <div class="details">
+        <span class="label">Número de cuenta</span>
+        <div class="account" id="cuenta">00099140200002</div>
+      </div>
+      <button type="button" id="copiar">⧉ &nbsp; Copiar número de cuenta</button>
+      <p class="notice" id="mensaje" role="status" aria-live="polite"></p>
+    </section>
+    <p class="help">Verificá el nombre de la titular antes de confirmar la transferencia.</p>
+  </main>
+  <script>
+    const cuenta = "00099140200002";
+    const boton = document.getElementById("copiar");
+    const mensaje = document.getElementById("mensaje");
+
+    function alternativaCopiar(texto) {
+      const temporal = document.createElement("textarea");
+      temporal.value = texto;
+      temporal.setAttribute("readonly", "");
+      temporal.style.position = "fixed";
+      temporal.style.left = "-9999px";
+      document.body.appendChild(temporal);
+      temporal.select();
+      temporal.setSelectionRange(0, texto.length);
+      let exito = false;
+      try { exito = document.execCommand("copy"); } catch (_) {}
+      temporal.remove();
+      return exito;
+    }
+
+    boton.addEventListener("click", async () => {
+      let copiado = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(cuenta);
+          copiado = true;
+        }
+      } catch (_) {}
+      if (!copiado) copiado = alternativaCopiar(cuenta);
+      if (copiado) {
+        mensaje.textContent = "✓ ¡Cuenta copiada!";
+        boton.textContent = "✓ Copiado";
+      } else {
+        mensaje.textContent = "Mantené presionado el número para copiarlo.";
+        document.getElementById("cuenta").focus();
+      }
+    });
+  </script>
+</body>
+</html>
